@@ -1,0 +1,10 @@
+import express from 'express';
+import cors from 'cors';
+const app = express();
+const port = Number(process.env.PORT || 4002);
+app.use(cors()); app.use(express.json());
+const readings = [{ sensor: 'TMP-01', value: -8.4, unit: '°C' }, { sensor: 'WND-02', value: 18.6, unit: 'm/s' }, { sensor: 'SNW-03', value: 142, unit: 'cm' }, { sensor: 'PWR-04', value: 76, unit: '%' }];
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', project: 'snow-mountain-weather-station', workflow: '采集传感器数据 → 校验质量 → 触发告警 → 同步观测记录' }));
+app.get('/api/readings', (_req, res) => res.json(readings));
+app.post('/api/sync', (_req, res) => res.json({ status: 'accepted', syncedAt: new Date().toISOString() }));
+app.listen(port, () => console.log(`Weather station API running at http://localhost:${port}`));
